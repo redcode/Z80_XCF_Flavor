@@ -1,0 +1,43 @@
+Many thanks to the following individuals (in alphabetical order):
+
+* azesmbog
+    1. For validating tests on real hardware.
+    2. For his research on the unstable flag behavior of the "ccf/scf"
+       instructions.
+    3. For his invaluable help.
+* Banks, David (hoglet)
+    For his research on the flag behavior of the "ccf/scf" instructions [1].
+* Brady, Stuart
+    For his research on the flag behavior of the "ccf/scf" instructions [2].
+* Greenway, Ian
+    For testing the flag behavior of the "ccf/scf" instructions on real hardware
+    [2,3].
+* Helcmanovsky, Peter (Ped7g)
+    1. For writing the "Z80 CCF SCF Outcome Stability" test [4].
+    2. For his research on the unstable flag behavior of the "ccf/scf"
+       instructions.
+* Nicolás-González, César
+    For helping me to research the unstable flag behavior of the "ccf/scf"
+    instructions.
+* Rak, Patrik
+    1. For cracking the flag behavior of the "ccf/scf" instructions [5,6].
+    2. For writing the "Zilog Z80 CPU Test Suite" [6,7].
+* Woodmass, Mark (Woody)
+    * For his research on the flag behavior of the "ccf/scf" instructions [8].
+
+
+References
+==========
+
+1. Banks, David (2018-08-21). Undocumented Z80 Flags.
+    * https://github.com/hoglet67/Z80Decoder/wiki/Undocumented-Flags
+    * https://stardot.org.uk/forums/download/file.php?id=39831
+2. https://sourceforge.net/p/fuse-emulator/mailman/message/6929573
+3. https://sourceforge.net/p/fuse-emulator/mailman/message/4502844
+4. https://github.com/MrKWatkins/ZXSpectrumNextTests
+5. https://worldofspectrum.org/forums/discussion/20345
+6. https://worldofspectrum.org/forums/discussion/41704
+7. https://worldofspectrum.org/forums/discussion/41834
+    * http://zxds.raxoft.cz/taps/misc/z80test-1.0.zip
+    * https://github.com/raxoft/z80test
+8. http://groups.google.co.uk/group/comp.sys.sinclair/msg/56dd1fd4ccb5fb3b
