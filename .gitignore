@@ -1,4 +1,4 @@
-.DS_Store
 .directory
+.DS_Store
 Thumbs.db
-build/
+/build/
