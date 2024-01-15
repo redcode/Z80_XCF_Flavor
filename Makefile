@@ -1,6 +1,4 @@
-default: program
-
-program:
+tap:
 	sjasmplus "sources/Z80 XCF Flavor.asm"
 
 clean:
