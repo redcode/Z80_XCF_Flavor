@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+    paths:
+    - '.github/workflows/build.yml'
+    - 'sources/**'
+    - 'Makefile'
+  pull_request:
+    paths:
+    - '.github/workflows/build.yml'
+    - 'sources/**'
+    - 'Makefile'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install SjASMPlus
+      run: |
+        mkdir sjasmplus && cd sjasmplus
+        curl -L $(
+          curl -s https://api.github.com/repos/z00m128/sjasmplus/releases/latest |
+          grep src.tar.xz | grep browser_download_url | cut -d : -f 2,3 | tr -d '" '
+        ) | xz -cd | tar --strip-components=1 -xf -
+        mkdir build
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+        cmake --build build --config Release
+        sudo cmake --install build --config Release
+        cd ..
+
+    - name: Build
+      run: make
