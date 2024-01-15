@@ -13,7 +13,7 @@ The Q "register", or let's call it the Q factor, serves as an abstraction for a 
 
 This is the reason why for decades it has been very difficult to decipher the behavior of these flags.
 
-In 2018, [David Banks](https://github.com/hoglet67) [published](https://github.com/hoglet67/Z80Decoder/wiki/Undocumented-Flags) that NEC NMOS models simply copy the value of both flags from the A register, whereas ST CMOS models use the formula discovered by Patrik for YF but obtain the value of XF from A. However, doubts have arisen regarding the existence of the ST CMOS behavior described by David Banks. Subsequent tests conducted by others indicate that these models behave the same as Zilog's in terms of `ccf` and `scf`. Therefore, Banks' results could have been influenced by the unstable behavior of the undocumented flags during these instructions or, in any case, might only apply to specific ST CMOS models.
+In 2018, according to the [results](https://stardot.org.uk/forums/viewtopic.php?p=211042#p211042) of his tests, [David Banks](https://github.com/hoglet67) [stated](https://github.com/hoglet67/Z80Decoder/wiki/Undocumented-Flags) that NEC NMOS models simply get the value of both flags from the A register, whereas ST CMOS models use the formula discovered by Patrik for YF but obtain the value of XF from A. However, doubts have arisen regarding the existence of the ST CMOS behavior described by David Banks. Subsequent tests conducted by others indicate that these models behave the same as Zilog's in terms of `ccf` and `scf`. Therefore, Banks' results could have been influenced by the unstable behavior of the undocumented flags during these instructions or, in any case, might only apply to specific ST CMOS models.
 
 ## Test Details
 
