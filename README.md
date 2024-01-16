@@ -20,7 +20,7 @@ In 2018, according to the [results](https://stardot.org.uk/forums/viewtopic.php?
 <img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/screenshot.gif" width="352" height="296" align="right">
 <picture><img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/tp.gif" width="8" height="296" align="right"></picture>
 
-Z80 XCF Flavor displays the values of YF and XF after the execution of `ccf` and `scf` for every possible combination of states of Q, F, and A. The left column represents the values of each factor (`1` is used to represent `FFh` due to the limited space on the ZX Spectrum screen). The central columns labeled "Any Zilog", "NEC NMOS", and "ST CMOS" show the reference values of YF and XF on those CPU variants for both `ccf` and `scf`. Finally, the two columns on the right display the values of YF and XF obtained on the host CPU for `ccf` and `scf` separately.
+Z80 XCF Flavor displays the values of YF and XF after the execution of `ccf` and `scf` for every possible combination of states of Q, F, and A. The left column represents the values of each factor (`1` is used to indicate that bits 5 and 3 in the factor are set to 1, due to the limited space on the ZX Spectrum screen). The central columns labeled "Any Zilog", "NEC NMOS", and "ST CMOS" show the reference values of YF and XF on those CPU variants for both `ccf` and `scf`. Finally, the two columns on the right display the values of YF and XF obtained on the host CPU for `ccf` and `scf` separately.
 
 The program exists to BASIC after printing the results. To run it again, type `RANDOMIZE USR 32768`.
 
@@ -31,7 +31,7 @@ The program exists to BASIC after printing the results. To run it again, type `R
 
 You will need [SjASMPlus](https://github.com/z00m128/sjasmplus) to assemble the source code.
 
-To build the tape image, type `make` or <code>jsasmplus&nbsp;"sources/Z80&nbsp;XCF&nbsp;Flavor.asm"</code>.
+To build the tape image, type `make` or <code>sjasmplus&nbsp;"sources/Z80&nbsp;XCF&nbsp;Flavor.asm"</code>.
 
 ## Thanks
 
