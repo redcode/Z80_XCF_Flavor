@@ -1,6 +1,6 @@
 ;------------------------------------------------------------------------------.
 ;                                                                              |
-;  Z80 XCF Flavor v0.1                                                         |
+;  Z80 XCF Flavor v1.0                                                         |
 ;  Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.                     |
 ;                                                                              |
 ;  This program is free software: you can redistribute it and/or modify it     |
@@ -26,51 +26,53 @@ PRINT        = $203C
 	org $8000
 
 	macro Q0_F0_A0
-		xor a	   ; A = 0; YF, XF, YQ, XQ = 0
+		xor a	     ; A = 0; YF, XF, YQ, XQ = 0
 	endm
 
 	macro Q0_F1_A0
-		xor a
-		dec a	   ; YF, XF = 1
-		ld  a, 0   ; A = 0; Q = 0
+		xor a	     ;
+		dec a	     ; YF, XF = 1
+		ld  a, 0     ; A = 0; Q = 0
 	endm
 
 	macro Q1_F1_A0
-		xor a	   ; A = 0
-		ld  e, a
-		dec e	   ; YF, XF, YQ, XQ = 1
+		xor a	     ; A = 0
+		ld  e, a     ;
+		dec e	     ; YF, XF, YQ, XQ = 1
 	endm
 
 	macro Q0_F0_A1
-		xor a	   ; YF, XF = 0
-		ld  a, $FF ; A = FFh; YQ, XQ = 0
+		xor a	     ; YF, XF = 0
+		ld  a, $FF   ; A = FFh; Q = 0
 	endm
 
 	macro Q0_F1_A1
-		xor a
-		dec a	   ; A = FFh; YF, XF = 1
-		nop	   ; Q = 0
+		xor a	     ;
+		dec a	     ; A = FFh; YF, XF = 1
+		nop	     ; Q = 0
 	endm
 
 	macro Q1_F1_A1
-		xor a
-		dec a	   ; A = FFh; YF, XF, YQ, XQ = 1
+		xor a	     ;
+		dec a	     ; A = FFh; YF, XF, YQ, XQ = 1
 	endm
 
 
-start:	call CLS
-	ld   a, 2
-	call OPEN_CHANNEL
+start:	call CLS	     ; Clear the screen.
+	ld   a, 2	     ; Open channel #2 for text output.
+	call OPEN_CHANNEL    ;
 
-	ld   hl, screen_text
-	call print
-	ld   bc, results
+	ld   hl, screen_text ; Print the static text.
+	call print	     ;
 
-	ld   hl, at_yx + 1
-	ld   (hl), 10
-	inc  hl
-	ld   (hl), 26
+	ld   bc, results     ; Set BC to the address of the results array.
+	ld   hl, at_yx + 1   ; Configure the <AT><y><x> sequence:
+	ld   (hl), 10	     ; <y> = 10
+	inc  hl		     ;
+	ld   (hl), 26	     ; <x> = 26
 
+	; Test all factor combinations with `ccf` and
+	; print the resulting values of YF and XF.
 	Q0_F0_A0 : ccf : call keep_and_print_yxf
 	Q0_F1_A0 : ccf : call keep_and_print_yxf
 	Q1_F1_A0 : ccf : call keep_and_print_yxf
@@ -78,11 +80,13 @@ start:	call CLS
 	Q0_F1_A1 : ccf : call keep_and_print_yxf
 	Q1_F1_A1 : ccf : call keep_and_print_yxf
 
-	ld   hl, at_yx + 1
-	ld   (hl), 10
-	inc  hl
-	ld   (hl), 30
+	ld   hl, at_yx + 1 ; Configure the <AT><y><x> sequence:
+	ld   (hl), 10	   ; <y> = 10
+	inc  hl		   ;
+	ld   (hl), 30	   ; <x> = 30
 
+	; Test all factor combinations with `scf` and
+	; print the resulting values of YF and XF.
 	Q0_F0_A0 : scf : call keep_and_print_yxf
 	Q0_F1_A0 : scf : call keep_and_print_yxf
 	Q1_F1_A0 : scf : call keep_and_print_yxf
@@ -90,82 +94,92 @@ start:	call CLS
 	Q0_F1_A1 : scf : call keep_and_print_yxf
 	Q1_F1_A1 : scf : call keep_and_print_yxf
 
-	ld   hl, at_yx + 2
-	ld   (hl), 8
-	dec  hl
-	ld   (hl), 19
-	dec  hl
-	call print
+	ld   hl, at_yx + 2	      ; Configure the <AT><y><x> sequence:
+	ld   (hl), 8		      ; <x> = 8
+	dec  hl			      ;
+	ld   (hl), 19		      ; <y> = 19
+	dec  hl			      ; Print the sequence to move the cursor
+	call print		      ;   after "Result: "
 
-	ld   de, results
-	ld   hl, results + 6
-	call compare_results
-	ld   hl, unknown_flavor_text
-	cp   0
-	jr   nz, .print_result
+	ld   de, results	      ; Compare the values obtained with `ccf`,
+	ld   hl, results + 6	      ;   against those obtained with `scf`.
+	call compare_results	      ;   They should be the same; otherwise,
+	cp   0			      ;   the behavior is unknown (or unstable)
+	jr   nz, .unknown_flavor      ;   and we report it.
 
-	ld   de, results
-	ld   hl, results_on_zilog
-	call compare_results
-	ld   hl, zilog_flavor_text
-	cp   0
-	jr   z, .print_result
+	ld   de, results	      ; Compare the values obtained with `ccf`
+	ld   hl, results_on_zilog     ;   against the reference values for Zilog
+	call compare_results	      ;   CPU models.
+	ld   hl, zilog_flavor_text    ;
+	cp   0			      ; If the values match, report "Zilog
+	jr   z, .print_result	      ;   flavor" and exit.
 
-	ld   de, results
-	ld   hl, results_on_nec_nmos
-	call compare_results
-	ld   hl, nec_nmos_flavor_text
-	cp   0
-	jr   z, .print_result
+	ld   de, results	      ; Compare the values obtained with `ccf`
+	ld   hl, results_on_nec_nmos  ;   against the reference values for NEC
+	call compare_results	      ;   NMOS CPU models.
+	ld   hl, nec_nmos_flavor_text ;
+	cp   0			      ; If the values match, report "NEC NMOS
+	jr   z, .print_result	      ;   flavor" and exit.
 
-	ld   de, results
-	ld   hl, results_on_st_cmos
-	call compare_results
-	ld   hl, st_cmos_flavor_text
-	cp   0
-	jr   z, .print_result
+	ld   de, results	      ; Compare the values obtained with `ccf`
+	ld   hl, results_on_st_cmos   ;   against the reference values for ST
+	call compare_results	      ;   CMOS CPU models.
+	ld   hl, st_cmos_flavor_text  ;
+	cp   0			      ; If the values match, report "ST CMOS
+	jr   z, .print_result	      ;   flavor" and exit.
 
-	ld   hl, st_cmos_flavor_text
+.unknown_flavor:
+	ld   hl, unknown_flavor_text  ; Report "Unknown flavor" and exit.
 .print_result:
 	call print
 	ret
 
 
-; Keeps YF and XF into the results array and print their value
-; at the position specified by the AT sequence stored in `at_yx`.
+;--------------------------------------------------------------------.
+; Keeps YF and XF into the results array, prints their value at the  |
+; coordinates specified by the <AT><y><x> sequence stored in `at_yx` |
+; and increments <y>.						     |
+;								     |
+; On Entry:							     |
+;   * BC - Address of the element in the results array.		     |
+; On Exit:							     |
+;   * BC - Address of the next element in the results array.	     |
+;===================================================================='
 
 keep_and_print_yxf:
-	push af            ; Copy the flags in E and A.
-	pop  de            ;
-	ld   a, e          ;
-	and  00101000b     ; Clear all flags in the copy of A except YF and XF,
-	ld   (bc), a       ;   then keep YF and XF into the results array.
-	inc  bc            ; Point BC to the next element of the array.
-	ld   hl, at_yx     ; Move the cursor to the column/row specified by HL
-	call print         ;   by printing an AT Y,X sequence.
-	ld   hl, at_yx + 1 ; Increment Y in the AT sequence so that next time
-	inc  (hl)          ;   we print at the next row of the screen.
-	srl  e             ; Shift the flags to the right until XF is at bit 0.
-	srl  e             ;
-	srl  e             ;
-	ld   d, e          ; Now copy the flags also in D, and shift this
-	srl  d             ;   register right until YF is at bit 0 (we need to
-	srl  d             ;   use 2 registers because YF is printed first).
-	ld   a, d          ; Print YF
-	and  1             ;
-	add  $30           ;
-	rst  $10           ;
-	ld   a, e          ; Print XF
-	and  1
-	add  $30
-	rst  $10
+	push af		   ; Copy the flags in E and A.
+	pop  de		   ;
+	ld   a, e	   ;
+	and  00101000b	   ; Clear all bits in the copy of A except YF and XF.
+	ld   (bc), a	   ; Keep YF and XF into the results array.
+	inc  bc		   ; Point BC to the next element of the array.
+	ld   hl, at_yx	   ; Move the cursor to the column/row specified by HL
+	call print	   ;   by printing the <AT><y><x> sequence.
+	ld   hl, at_yx + 1 ; Increment <y> in the sequence so that next time we
+	inc  (hl)	   ;   print at the next row of the screen.
+	srl  e		   ; Shift the flags to the right until XF is at bit 0.
+	srl  e		   ;
+	srl  e		   ;
+	ld   d, e	   ; Now copy the flags also in D, and shift this
+	srl  d		   ;   register right until YF is at bit 0 (we need to
+	srl  d		   ;   use 2 registers because YF is printed first).
+	ld   a, d	   ; Print YF.
+	and  1		   ;
+	add  $30	   ;
+	rst  $10	   ;
+	ld   a, e	   ; Print XF.
+	and  1		   ;
+	add  $30	   ;
+	rst  $10	   ;
 	ret
 
 
-; Prints a 1Fh-terminated string.
-;
-; Input
-;   * hl: String address.
+;---------------------------------.
+; Prints a 1Fh-terminated string. |
+;				  |
+; On Entry:			  |
+;   * HL - String address.	  |
+;================================='
 
 print:	ld   a, (hl)
 	cp   $1F
@@ -175,13 +189,15 @@ print:	ld   a, (hl)
 	jr   print
 
 
-; Compares 2 arrays of results.
-;
-; Input
-;   * hl: Address of array 1.
-;   * de: Address of array 2.
-; Output
-;   * a: 0 if both arrays are equal; otherwise, a non-zero value.
+;-----------------------------------------------------------------.
+; Compares 2 arrays of results.					  |
+;								  |
+; On Entry:							  |
+;   * HL - Array 1 address.					  |
+;   * DE - Array 2 address.					  |
+; On Exit:							  |
+;   * A - 0 if the arrays are equal; otherwise, a non-zero value. |
+;================================================================='
 
 compare_results:
 	ld   c, 6
@@ -193,7 +209,6 @@ compare_results:
 	inc  hl
 	dec  c
 	jr   nz, .compare
-	xor  a
 	ret
 
 
@@ -206,19 +221,19 @@ results_on_nec_nmos:
 results_on_st_cmos:
 	db 00000000b, 00100000b, 00000000b, 00101000b, 00101000b, 00101000b
 at_yx:
-	db 22,10,27,$1F
+	db 22, 10, 27, $1F
 screen_text:
 	db "Z80 XCF "
 	db 19, 1, 17, 2, 16, 7, "F", 17, 3, "L", 17, 1, "A", 17, 5, 16, 8, "V"
-	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v0.1 (",__DATE__,")\r"
+	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.0 (",__DATE__,")\r"
 	db 127, " 2024 Manuel Sainz de Baranda\r"
 	db 16, 1, "https://zxe.io", 16, 8, "\r"
 	db "\r"
 	db "\r"
 	db "\r"
 	db "\r"
-	db 19, 1, 17, 0, 16, 7,"Case      Any  NEC   ST    HOST \r"
-	db "Tested   Zilog NMOS CMOS   CPU  \r"
+	db 19, 1, 17, 0, 16, 7,"  Case    Any  NEC   ST    HOST \r"
+	db " Tested  Zilog NMOS CMOS   CPU  \r"
 	db "(Q<>F)|A   YX   YX   YX   YX  YX", 17, 8, 16, 8, 19, 8, "\r"
 	db "(0<>0)|0   00   00   00\r"
 	db "(0<>1)|0   11   00   10\r"
@@ -275,5 +290,4 @@ size = $ - start
 
 	MAKE_TAPE "Z80 XCF Flavor.tap", "Z80 XCF", start, size, start
 
-
-; Z80 XCF Flavor.asm EOF
+; EOF
