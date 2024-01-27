@@ -259,11 +259,11 @@ unknown_flavor_text:
 
 	macro MAKE_TAPE tape_file, prog_name, start_add, code_len, call_add
 
-CODE	  = $AF
-USR	  = $C0
-LOAD	  = $EF
 CLEAR	  = $FD
+CODE	  = $AF
+LOAD	  = $EF
 RANDOMIZE = $F9
+USR	  = $C0
 
 	org $5C00
 basic:	db  0, 1
@@ -276,11 +276,14 @@ name:	ds  10, 32
 	org name
 	db  prog_name
 	org name + 10
-	db  '"', CODE, ':', RANDOMIZE, USR, '8', $0E, 0, 0
+	db  '"', CODE, $0D
+line_1_size = $ - line_1
+	db  0, 2
+	dw  line_2_size
+line_2:	db  RANDOMIZE, USR, '8', $0E, 0, 0
 	dw  call_add
 	db  0, $0D
-
-line_1_size = $ - line_1
+line_2_size = $ - line_2
 basic_size  = $ - basic
 
 	EMPTYTAP tape_file
