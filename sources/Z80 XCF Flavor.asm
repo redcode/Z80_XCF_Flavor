@@ -1,6 +1,6 @@
 ;------------------------------------------------------------------------------.
 ;                                                                              |
-;  Z80 XCF Flavor v1.0                                                         |
+;  Z80 XCF Flavor v1.1                                                         |
 ;  Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.                     |
 ;                                                                              |
 ;  This program is free software: you can redistribute it and/or modify it     |
@@ -21,6 +21,7 @@
 CLS          = $0DAF
 OPEN_CHANNEL = $1601
 PRINT        = $203C
+UDG	     = $5C7B
 
 	device zxspectrum48, $7FFF
 	org $8000
@@ -62,9 +63,12 @@ start:	di		     ; Disable interrupts.
 	call CLS	     ; Clear the screen.
 	ld   a, 2	     ; Open channel #2 for text output.
 	call OPEN_CHANNEL    ;
-
+	ld   bc, (UDG)	     ; Save the current UDG pointer.
+	ld   de, udg	     ; Set custom UDG for "ñ".
+	ld   (UDG), de	     ;
 	ld   hl, screen_text ; Print the static text.
 	call print	     ;
+	ld   (UDG), bc       ; Restore the original UDG pointer.
 
 	ld   bc, results     ; Set BC to the address of the results array.
 	ld   hl, at_yx + 1   ; Configure the <AT><y><x> sequence:
@@ -227,8 +231,8 @@ at_yx:
 screen_text:
 	db "Z80 XCF "
 	db 19, 1, 17, 2, 16, 7, "F", 17, 3, "L", 17, 1, "A", 17, 5, 16, 8, "V"
-	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.0 (",__DATE__,")\r"
-	db 127, " 2024 Manuel Sainz de Baranda\r"
+	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.1 (",__DATE__,")\r"
+	db 127, " Manuel Sainz de Baranda y Go", $90, "i\r"
 	db 16, 1, "https://zxe.io", 16, 8, "\r"
 	db "\r"
 	db "\r"
@@ -255,7 +259,15 @@ st_cmos_flavor_text:
 	db 19, 1, 17, 4, "ST CMOS", 19, 8, 17, 8, " flavor", $1F
 unknown_flavor_text:
 	db 19, 1, 18, 1, 17, 2, "Unknown", 19, 8, 18, 8, 17, 8, " flavor", $1F
-
+udg:
+	db 00000000b ; ñ
+	db 00111000b
+	db 00000000b
+	db 01011000b
+	db 01100100b
+	db 01000100b
+	db 01000100b
+	db 00000000b
 
 	macro MAKE_TAPE tape_file, prog_name, start_add, code_len, call_add
 
