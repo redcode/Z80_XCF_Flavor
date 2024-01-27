@@ -58,7 +58,8 @@ PRINT        = $203C
 	endm
 
 
-start:	call CLS	     ; Clear the screen.
+start:	di		     ; Disable interrupts.
+	call CLS	     ; Clear the screen.
 	ld   a, 2	     ; Open channel #2 for text output.
 	call OPEN_CHANNEL    ;
 
@@ -129,10 +130,11 @@ start:	call CLS	     ; Clear the screen.
 	jr   z, .print_result	      ;   flavor" and exit.
 
 .unknown_flavor:
-	ld   hl, unknown_flavor_text  ; Report "Unknown flavor" and exit.
+	ld   hl, unknown_flavor_text  ; Report "Unknown flavor".
 .print_result:
 	call print
-	ret
+	ei			      ; Re-enable interrupts.
+	ret			      ; Exit to BASIC.
 
 
 ;--------------------------------------------------------------------.
