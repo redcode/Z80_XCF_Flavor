@@ -72,7 +72,7 @@ start:	di		     ; Disable interrupts.
 
 	ld   bc, results     ; Set BC to the address of the results array.
 	ld   hl, at_yx + 1   ; Configure the <AT><y><x> sequence:
-	ld   (hl), 10	     ; <y> = 10
+	ld   (hl), 13	     ; <y> = 13
 	inc  hl		     ;
 	ld   (hl), 26	     ; <x> = 26
 
@@ -86,7 +86,7 @@ start:	di		     ; Disable interrupts.
 	Q1_F1_A1 : ccf : call keep_and_print_yxf
 
 	ld   hl, at_yx + 1 ; Configure the <AT><y><x> sequence:
-	ld   (hl), 10	   ; <y> = 10
+	ld   (hl), 13	   ; <y> = 13
 	inc  hl		   ;
 	ld   (hl), 30	   ; <x> = 30
 
@@ -102,7 +102,7 @@ start:	di		     ; Disable interrupts.
 	ld   hl, at_yx + 2	      ; Configure the <AT><y><x> sequence:
 	ld   (hl), 8		      ; <x> = 8
 	dec  hl			      ;
-	ld   (hl), 19		      ; <y> = 19
+	ld   (hl), 21		      ; <y> = 21
 	dec  hl			      ; Print the sequence to move the cursor
 	call print		      ;   after "Result: "
 
@@ -227,7 +227,7 @@ results_on_nec_nmos:
 results_on_st_cmos:
 	db 00000000b, 00100000b, 00000000b, 00101000b, 00101000b, 00101000b
 at_yx:
-	db 22, 10, 27, $1F
+	db 22, 13, 26, $1F
 screen_text:
 	db "Z80 XCF "
 	db 19, 1, 17, 2, 16, 7, "F", 17, 3, "L", 17, 1, "A", 17, 5, 16, 8, "V"
@@ -235,8 +235,11 @@ screen_text:
 	db 127, " Manuel Sainz de Baranda y Go", $90, "i\r"
 	db 16, 1, "https://zxe.io", 16, 8, "\r"
 	db "\r"
-	db "\r"
-	db "\r"
+	db "This program checks the behavior\r"
+	db "of the undocumented flags during\r"
+	db "the CCF and SCF instructions and\r"
+	db "detects the Z80 CPU type of your\r"
+	db "ZX Spectrum.\r"
 	db "\r"
 	db 19, 1, 17, 0, 16, 7,"  Case    Any  NEC   ST    HOST \r"
 	db " Tested  Zilog NMOS CMOS   CPU  \r"
@@ -247,8 +250,7 @@ screen_text:
 	db "(0<>0)|1   11   11   11\r"
 	db "(0<>1)|1   11   11   11\r"
 	db "(1<>1)|1   11   11   11\r"
-	db 23, 25, 0, 19, 1, 17, 0, 16, 7, "ccf scf", 17, 8, 16, 8, 19, 8, "\r"
-	db "\r"
+	db 17, 0, 16, 7, 23, 25, 0, 19, 1, "ccf scf", 17, 8, 16, 8, 19, 8, "\r"
 	db "\r"
 	db "Result:",$1F
 zilog_flavor_text:
