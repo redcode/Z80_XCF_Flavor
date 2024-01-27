@@ -17,12 +17,11 @@ In 2018, according to the [results](https://stardot.org.uk/forums/viewtopic.php?
 
 ## Test Details
 
-<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/screenshot.gif" width="352" height="296" align="right">
-<picture><img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/tp.gif" width="8" height="296" align="right"></picture>
+<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/readme-screenshot-1.1.gif" width="368" height="312" align="right">
 
 Z80 XCF Flavor displays the values of YF and XF after the execution of `ccf` and `scf` for every possible combination of states of Q, F, and A. The left column represents the values of each factor (`1` is used to indicate that bits 5 and 3 in the factor are set to 1, due to the limited space on the ZX Spectrum screen). The central columns labeled "Any Zilog", "NEC NMOS", and "ST CMOS" show the reference values of YF and XF on those CPU variants for both `ccf` and `scf`. Finally, the two columns on the right display the values of YF and XF obtained on the host CPU for `ccf` and `scf` separately.
 
-The program exists to BASIC after printing the results. To run it again, type `RANDOMIZE USR 32768`.
+The program exists to BASIC after printing the results. To run it again, type `RUN 2` or `RANDOMIZE USR 32768`.
 
 > [!IMPORTANT]
 > It is essential to note that this program does not conduct an exhaustive check of how each Z80 instruction affects Q. Instead, it uses the minimum necessary to test each combination of states. Its purpose is to detect real hardware behavior, not to validate the complete Q implementation of an emulator. For the latter, it is recommended to use the `z80ccf.tap` tape included in Patrik Rak's [Zilog Z80 CPU Test Suite](https://github.com/raxoft/z80test).

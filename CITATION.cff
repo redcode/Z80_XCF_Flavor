@@ -6,7 +6,7 @@ authors:
     email: manuel@zxe.io
     website: https://zxe.io
 cff-version: 1.2.0
-date-released: 2024-01-16
+date-released: 2024-01-27
 keywords:
   - CPU
   - NEC
@@ -21,5 +21,5 @@ message: If you use this software, please cite it using these metadata.
 repository-code: https://github.com/redcode/Z80_XCF_Flavor
 title: Z80 XCF Flavor
 type: software
-version: 1.0
+version: 1.1
 url: https://zxe.io/software/Z80_XCF_Flavor
