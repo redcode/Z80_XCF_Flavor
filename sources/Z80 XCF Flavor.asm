@@ -1,30 +1,24 @@
-;------------------------------------------------------------------------------.
-;                                                                              |
-;  Z80 XCF Flavor v1.1                                                         |
-;  Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.                     |
-;                                                                              |
-;  This program is free software: you can redistribute it and/or modify it     |
-;  under the terms of the GNU General Public License as published by the Free  |
-;  Software Foundation, either version 3 of the License, or (at your option)   |
-;  any later version.                                                          |
-;                                                                              |
-;  This program is distributed in the hope that it will be useful, but         |
-;  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY  |
-;  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License     |
-;  for more details.                                                           |
-;                                                                              |
-;  You should have received a copy of the GNU General Public License along     |
-;  with this program. If not, see <http://www.gnu.org/licenses/>.              |
-;                                                                              |
-;=============================================================================='
-
-CLS          = $0DAF
-OPEN_CHANNEL = $1601
-PRINT        = $203C
-UDG	     = $5C7B
+; Z80 XCF Flavor v1.2
+; Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.
+;
+; This program is free software: you can redistribute it and/or modify it under
+; the terms of the GNU General Public License as published by the Free Software
+; Foundation, either version 3 of the License, or (at your option) any later
+; version.
+;
+; This program is distributed in the hope that it will be useful, but WITHOUT
+; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+; FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License along with
+; this program. If not, see <http://www.gnu.org/licenses/>.
 
 	device zxspectrum48, $7FFF
-	org $8000
+
+CLS	     = $0DAF
+OPEN_CHANNEL = $1601
+PRINT	     = $203C
+UDG	     = $5C7B
 
 	macro Q0_F0_A0
 		xor a	     ; A = 0; YF, XF, YQ, XQ = 0
@@ -58,6 +52,8 @@ UDG	     = $5C7B
 		dec a	     ; A = FFh; YF, XF, YQ, XQ = 1
 	endm
 
+	org $8000
+
 
 start:	di		     ; Disable interrupts.
 	call CLS	     ; Clear the screen.
@@ -68,13 +64,8 @@ start:	di		     ; Disable interrupts.
 	ld   (UDG), de	     ;
 	ld   hl, screen_text ; Print the static text.
 	call print	     ;
-	ld   (UDG), bc       ; Restore the original UDG pointer.
-
+	ld   (UDG), bc	     ; Restore the original UDG pointer.
 	ld   bc, results     ; Set BC to the address of the results array.
-	ld   hl, at_yx + 1   ; Configure the <AT><y><x> sequence:
-	ld   (hl), 13	     ; <y> = 13
-	inc  hl		     ;
-	ld   (hl), 26	     ; <x> = 26
 
 	; Test all factor combinations with `ccf` and
 	; print the resulting values of YF and XF.
@@ -85,10 +76,8 @@ start:	di		     ; Disable interrupts.
 	Q0_F1_A1 : ccf : call keep_and_print_yxf
 	Q1_F1_A1 : ccf : call keep_and_print_yxf
 
-	ld   hl, at_yx + 1 ; Configure the <AT><y><x> sequence:
-	ld   (hl), 13	   ; <y> = 13
-	inc  hl		   ;
-	ld   (hl), 30	   ; <x> = 30
+	ld   hl, $1E0D	     ; Configure the <AT><y><x> sequence:
+	ld   (at_yx + 1), hl ;   y = 13; x = 30
 
 	; Test all factor combinations with `scf` and
 	; print the resulting values of YF and XF.
@@ -99,11 +88,9 @@ start:	di		     ; Disable interrupts.
 	Q0_F1_A1 : scf : call keep_and_print_yxf
 	Q1_F1_A1 : scf : call keep_and_print_yxf
 
-	ld   hl, at_yx + 2	      ; Configure the <AT><y><x> sequence:
-	ld   (hl), 8		      ; <x> = 8
-	dec  hl			      ;
-	ld   (hl), 21		      ; <y> = 21
-	dec  hl			      ; Print the sequence to move the cursor
+	ld   hl, $0815		      ; Configure the <AT><y><x> sequence:
+	ld   (at_yx + 1), hl	      ;   y = 21; x = 8
+	ld   hl, at_yx		      ; Print the sequence to move the cursor
 	call print		      ;   after "Result: "
 
 	ld   de, results	      ; Compare the values obtained with `ccf`,
@@ -141,16 +128,14 @@ start:	di		     ; Disable interrupts.
 	ret			      ; Exit to BASIC.
 
 
-;--------------------------------------------------------------------.
-; Keeps YF and XF into the results array, prints their value at the  |
-; coordinates specified by the <AT><y><x> sequence stored in `at_yx` |
-; and increments <y>.						     |
-;								     |
-; On Entry:							     |
-;   * BC - Address of the element in the results array.		     |
-; On Exit:							     |
-;   * BC - Address of the next element in the results array.	     |
-;===================================================================='
+; Keeps YF and XF into the results array, prints their value at the
+; coordinates specified by the <AT><y><x> sequence stored in `at_yx`
+; and increments <y>.
+;
+; On entry:
+;   * BC - Address of the element in the results array.
+; On exit:
+;   * BC - Address of the next element in the results array.
 
 keep_and_print_yxf:
 	push af		   ; Copy the flags in E and A.
@@ -166,9 +151,9 @@ keep_and_print_yxf:
 	srl  e		   ; Shift the flags to the right until XF is at bit 0.
 	srl  e		   ;
 	srl  e		   ;
-	ld   d, e	   ; Now copy the flags also in D, and shift this
-	srl  d		   ;   register right until YF is at bit 0 (we need to
-	srl  d		   ;   use 2 registers because YF is printed first).
+	ld   d, e	   ; Copy the flags also in D, and shift this register
+	srl  d		   ;   right until YF is at bit 0 (we need to use 2
+	srl  d		   ;   registers because YF is printed first).
 	ld   a, d	   ; Print YF.
 	and  1		   ;
 	add  $30	   ;
@@ -180,12 +165,10 @@ keep_and_print_yxf:
 	ret
 
 
-;---------------------------------.
-; Prints a 1Fh-terminated string. |
-;				  |
-; On Entry:			  |
-;   * HL - String address.	  |
-;================================='
+; Prints a 1Fh-terminated string.
+;
+; On entry:
+;   * HL - String address.
 
 print:	ld   a, (hl)
 	cp   $1F
@@ -195,15 +178,13 @@ print:	ld   a, (hl)
 	jr   print
 
 
-;-----------------------------------------------------------------.
-; Compares 2 arrays of results.					  |
-;								  |
-; On Entry:							  |
-;   * HL - Array 1 address.					  |
-;   * DE - Array 2 address.					  |
-; On Exit:							  |
-;   * A - 0 if the arrays are equal; otherwise, a non-zero value. |
-;================================================================='
+; Compares 2 arrays of results.
+;
+; On entry:
+;   * HL - Array 1 address.
+;   * DE - Array 2 address.
+; On exit:
+;   * A - 0 if the arrays are equal; otherwise, a non-zero value.
 
 compare_results:
 	ld   c, 6
@@ -231,7 +212,7 @@ at_yx:
 screen_text:
 	db "Z80 XCF "
 	db 19, 1, 17, 2, 16, 7, "F", 17, 3, "L", 17, 1, "A", 17, 5, 16, 8, "V"
-	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.1 (",__DATE__,")\r"
+	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.2 (",__DATE__,")\r"
 	db 127, " Manuel Sainz de Baranda y Go", $90, "i\r"
 	db 16, 1, "https://zxe.io", 16, 8, "\r"
 	db "\r"
@@ -271,13 +252,14 @@ udg:
 	db 01000100b
 	db 00000000b
 
-	macro MAKE_TAPE tape_file, prog_name, start_add, code_len, call_add
 
 CLEAR	  = $FD
 CODE	  = $AF
 LOAD	  = $EF
 RANDOMIZE = $F9
 USR	  = $C0
+
+	macro MAKE_TAPE tape_file, prog_name, start_add, code_len, call_add
 
 	org $5C00
 basic:	db  0, 1
