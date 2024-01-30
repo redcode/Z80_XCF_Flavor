@@ -17,7 +17,7 @@ In 2018, according to the [results](https://stardot.org.uk/forums/viewtopic.php?
 
 ## Test Details
 
-<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/readme-screenshot-1.1.gif" width="368" height="312" align="right">
+<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/readme-screenshot-1.2.gif" width="368" height="312" align="right">
 
 Z80 XCF Flavor displays the values of YF and XF after the execution of `ccf` and `scf` for every possible combination of states of Q, F, and A. The left column represents the values of each factor (`1` is used to indicate that bits 5 and 3 in the factor are set to 1, due to the limited space on the ZX Spectrum screen). The central columns labeled "Any Zilog", "NEC NMOS", and "ST CMOS" show the reference values of YF and XF on those CPU variants for both `ccf` and `scf`. Finally, the two columns on the right display the values of YF and XF obtained on the host CPU for `ccf` and `scf` separately.
 
@@ -30,7 +30,7 @@ The program exists to BASIC after printing the results. To run it again, type `R
 
 You will need [SjASMPlus](https://github.com/z00m128/sjasmplus) to assemble the source code.
 
-To build the tape image, type `make` or <code>sjasmplus&nbsp;"sources/Z80&nbsp;XCF&nbsp;Flavor.asm"</code>.
+To build the tape image, type `make` or <code>sjasmplus&nbsp;"Z80&nbsp;XCF&nbsp;Flavor.asm"</code>.
 
 ## Thanks
 
@@ -53,6 +53,6 @@ Copyright © 2022-2024 Manuel Sainz de Baranda y Goñi.
 
 This program is [free software](https://www.gnu.org/philosophy/free-sw.html): you can redistribute it and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) as published by the [Free Software Foundation](https://www.fsf.org), either version 3 of the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful, but **WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE**. See the GNU General Public License for more details.
+**This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE**. See the GNU General Public License for more details.
 
 You should have received a [copy](COPYING) of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
