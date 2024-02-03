@@ -1,4 +1,4 @@
-; Z80 XCF Flavor v1.2
+; Z80 XCF Flavor v1.3
 ; Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.
 ;
 ; This program is free software: you can redistribute it and/or modify it under
@@ -66,6 +66,9 @@ start:	di		     ; Disable interrupts.
 	call print	     ;
 	ld   (UDG), bc	     ; Restore the original UDG pointer.
 	ld   bc, results     ; Set BC to the address of the results array.
+
+	ld   hl, $1A0D	     ; Configure the <AT><y><x> sequence:
+	ld   (at_yx + 1), hl ;   y = 13; x = 26
 
 	; Test all factor combinations with `ccf` and
 	; print the resulting values of YF and XF.
@@ -212,7 +215,7 @@ at_yx:
 screen_text:
 	db "Z80 XCF "
 	db 19, 1, 17, 2, 16, 7, "F", 17, 3, "L", 17, 1, "A", 17, 5, 16, 8, "V"
-	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.2 (",__DATE__,")\r"
+	db 17, 4, "O", 17, 6, "R", 17, 8, 16, 8, 19, 8, " v1.3 (",__DATE__,")\r"
 	db 127, " Manuel Sainz de Baranda y Go", $90, "i\r"
 	db 16, 1, "https://zxe.io", 16, 8, "\r"
 	db "\r"
