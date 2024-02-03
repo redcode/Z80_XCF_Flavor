@@ -256,6 +256,9 @@ udg:
 	db 00000000b
 
 
+	SAVESNA "Z80 XCF Flavor.sna", start
+
+
 CLEAR	  = $FD
 CODE	  = $AF
 LOAD	  = $EF
