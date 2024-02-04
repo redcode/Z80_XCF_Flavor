@@ -1,5 +1,15 @@
 # Z80 XCF Flavor Changelog
 
+## 1.3 / 2024-02-04
+
+### Bugfixes
+
+* Reverted the removal of superfluous code made in the previous version (necessary to be able to run the test more than once).
+
+### Enhancements
+
+* Added generation of a snapshot in SNA format (requested by Folkert van Heusden) in addition to the tape image (thanks, [Ped7g](https://github.com/ped7g)).
+
 ## 1.2 / 2024-01-30
 
 ### Enhancements
