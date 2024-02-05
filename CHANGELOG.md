@@ -1,5 +1,11 @@
 # Z80 XCF Flavor Changelog
 
+## 1.4 / 2024-02-05
+
+### Enhancements
+
+* The program no longer prints `<AT><Y><X>` sequences. This change makes it easier for test runners that do not emulate a full ZX Spectrum to display the output.
+
 ## 1.3 / 2024-02-04
 
 ### Bugfixes

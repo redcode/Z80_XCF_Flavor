@@ -7,17 +7,15 @@ This is a test for the [ZX Spectrum](https://en.wikipedia.org/wiki/ZX_Spectrum) 
 
 ## Background
 
-In 2012, [Patrik Rak](https://https://github.com/raxoft) [cracked](https://worldofspectrum.org/forums/discussion/41704) the behavior of YF and XF in the `ccf` and `scf` instructions, confirming that their values correspond, respectively, to bits 5 and 3 of the result of <code>(Q&nbsp;^&nbsp;F)&nbsp;|&nbsp;A</code>. This discovery applies to all Zilog Z80 models, both NMOS and CMOS.
+In 2012, [Patrik Rak](https://https://github.com/raxoft) [deciphered](https://worldofspectrum.org/forums/discussion/41704) the behavior of YF and XF in the `ccf` and `scf` instructions, confirming that their values correspond, respectively, to bits 5 and 3 of the result of <code>(Q&nbsp;^&nbsp;F)&nbsp;|&nbsp;A</code>. This discovery applies to all Zilog Z80 models, both NMOS and CMOS.
 
 The Q "register", or let's call it the Q factor, serves as an abstraction for a set of latches within the ALU where the CPU constructs the updated values of the flags. Put simply, after an instruction that does not alter the flags (including <code>ex&nbsp;af,af'</code> and <code>pop&nbsp;af</code>), Q equals `0`. Conversely, after an instruction that modifies the flags, Q equals the new value of the F register. Strangely, during the execution of the `ccf` and `scf` instructions, Q appears to leak partially, impacting YF and XF as seen in the aforementioned formula. Whether this leakage is intentional on Zilog's part, perhaps for verification or debugging purposes, remains a mystery. What we do know is that this behavior is not consistent across any Z80 model, regardless of the manufacturer. Many tested CPUs exhibit instability in the values of YF and XF during these instructions. Interestingly, the same CPU may demonstrate stability in some machines and instability in others, suggesting that external factors such as temperature, voltage, or clock signal may be at play.
-
-This is the reason why for decades it has been very difficult to decipher the behavior of these flags.
 
 In 2018, according to the [results](https://stardot.org.uk/forums/viewtopic.php?p=211042#p211042) of his tests, [David Banks](https://github.com/hoglet67) [stated](https://github.com/hoglet67/Z80Decoder/wiki/Undocumented-Flags) that NEC NMOS models simply get the value of both flags from the A register, whereas ST CMOS models use the formula discovered by Patrik for YF but obtain the value of XF from A. However, doubts have arisen regarding the existence of the ST CMOS behavior described by David Banks. Subsequent tests conducted by others indicate that these models behave the same as Zilog's in terms of `ccf` and `scf`. Therefore, Banks' results could have been influenced by the unstable behavior of the undocumented flags during these instructions or, in any case, might only apply to specific ST CMOS models.
 
 ## Test Details
 
-<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/readme-screenshot-1.3.gif" width="368" height="312" align="right">
+<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/readme-screenshot-1.4.gif" width="368" height="312" align="right">
 
 Z80 XCF Flavor displays the values of YF and XF after the execution of `ccf` and `scf` for every possible combination of states of Q, F, and A. The left column represents the values of each factor (`1` is used to indicate that bits 5 and 3 in the factor are set to 1, due to the limited space on the ZX Spectrum screen). The central columns labeled "Any Zilog", "NEC NMOS", and "ST CMOS" show the reference values of YF and XF on those CPU variants for both `ccf` and `scf`. Finally, the two columns on the right display the values of YF and XF obtained on the host CPU for `ccf` and `scf` separately.
 
@@ -30,7 +28,7 @@ The program exists to BASIC after printing the results. To run it again, type `R
 
 You will need [SjASMPlus](https://github.com/z00m128/sjasmplus) to assemble the source code.
 
-To build the tape image, type `make` or <code>sjasmplus&nbsp;"Z80&nbsp;XCF&nbsp;Flavor.asm"</code>.
+To build the tape image and a snapshot in SNA format, type `make` or <code>sjasmplus&nbsp;"Z80&nbsp;XCF&nbsp;Flavor.asm"</code>.
 
 ## Thanks
 
