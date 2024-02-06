@@ -1,4 +1,4 @@
-; Z80 XCF Flavor v1.4
+; Z80 XCF Flavor v1.5
 ; Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.
 ;
 ; This program is free software: you can redistribute it and/or modify it under
@@ -15,10 +15,14 @@
 
 	device zxspectrum48, $7FFF
 
-CLS	     = $0DAF
-OPEN_CHANNEL = $1601
-PRINT	     = $203C
-UDG	     = $5C7B
+CL_ALL	  = $0DAF
+CHAN_OPEN = $1601
+UDG	  = $5C7B
+BRIGHT    = 19
+FLASH     = 18
+INK       = 16
+PAPER     = 17
+TAB       = 23
 
 	macro Q0_F0_A0
 		xor a	     ; A = 0; YF, XF, YQ, XQ = 0
@@ -56,9 +60,9 @@ UDG	     = $5C7B
 
 
 start:	di		     ; Disable interrupts.
-	call CLS	     ; Clear the screen.
+	call CL_ALL	     ; Clear the screen.
 	ld   a, 2	     ; Open channel #2 for text output.
-	call OPEN_CHANNEL    ;
+	call CHAN_OPEN	     ;
 	ld   bc, (UDG)	     ; Save the current UDG pointer.
 	ld   de, nn	     ; Set custom UDG for "ñ".
 	ld   (UDG), de	     ;
@@ -170,20 +174,28 @@ keep_yxf:
 ;   A and B.
 
 print_yxf:
-	ld   b, a ; Copy the flags to B.
-	srl  b	  ; Shift the flags to the right until XF is at bit 0.
-	srl  b	  ;
-	srl  b	  ;
-	ld   a, b ; Copy the shifted flags back to A, and shift this register to
-	srl  a	  ;   the right until YF is at bit 0 (we need to use 2 registers
-	srl  a	  ;   because YF is printed first).
-	and  1	  ; Clear all bits except bit 0.
-	add  $30  ; Translate the value of YF to ASCII.
-	rst  $10  ; Print the value of YF.
-	ld   a, b ; Copy B to A. Now bit 0 of A contains XF.
-	and  1	  ; Clear all bits except bit 0.
-	add  $30  ; Translate the value of XF to ASCII.
-	rst  $10  ; Print the value of XF.
+	ld   b, a   ; Copy the flags to B.
+	ld   a, INK ; Set blue ink.
+	rst  $10    ;
+	ld   a, 1   ;
+	rst  $10    ;
+	srl  b	    ; Shift the flags to the right until XF is at bit 0.
+	srl  b	    ;
+	srl  b	    ;
+	ld   a, b   ; Copy the shifted flags to A, and shift this register to
+	srl  a	    ;   the right until YF is at bit 0.
+	srl  a	    ;
+	and  1	    ; Clear all bits except bit 0.
+	add  $30    ; Translate the value of YF to ASCII.
+	rst  $10    ; Print the value of YF.
+	ld   a, b   ; Copy B to A. Now bit 0 of A contains XF.
+	and  1	    ; Clear all bits except bit 0.
+	add  $30    ; Translate the value of XF to ASCII.
+	rst  $10    ; Print the value of XF.
+	ld   a, INK ; Restore the default ink.
+	rst  $10    ;
+	ld   a, 8   ;
+	rst  $10    ;
 	ret
 
 
@@ -237,10 +249,12 @@ results_on_st_cmos:
 	db 00000000b, 00100000b, 00000000b, 00101000b, 00101000b, 00101000b
 header_text:
 	db 'Z80 XCF '
-	db 19, 1, 17, 2, 16, 7, 'F', 17, 3, 'L', 17, 1, 'A', 17, 5, 16, 8, 'V'
-	db 17, 4, 'O', 17, 6, 'R', 17, 8, 16, 8, 19, 8, ' v1.4 (',__DATE__,")\r"
+	db BRIGHT, 1, PAPER, 2, INK, 7, 'F', PAPER, 3, 'L', PAPER, 1, 'A'
+	db PAPER, 5, INK, 8, 'V'
+	db PAPER, 4, 'O', PAPER, 6, 'R', INK, 8, PAPER, 8, BRIGHT, 8, ' v1.5 ('
+	db __DATE__, ")\r"
 	db 127, ' Manuel Sainz de Baranda y Go', $90, "i\r"
-	db 16, 1, 'https://zxe.io', 16, 8, "\r"
+	db INK, 1, 'https://zxe.io', INK, 8, "\r"
 	db "\r"
 	db "This program checks the behavior\r"
 	db "of the undocumented flags during\r"
@@ -248,9 +262,9 @@ header_text:
 	db "detects the Z80 CPU type of your\r"
 	db "ZX Spectrum.\r"
 	db "\r"
-	db 19, 1, 17, 0, 16, 7,"  Case    Any  NEC   ST    HOST \r"
+	db BRIGHT, 1, PAPER, 0, INK, 7,"  Case    Any  NEC   ST    HOST \r"
 	db " Tested  Zilog NMOS CMOS   CPU  \r"
-	db '(Q<>F)|A   YX   YX   YX   YX  YX', 17, 8, 16, 8, 19, 8, $1F
+	db '(Q<>F)|A   YX   YX   YX   YX  YX', INK, 8, PAPER, 8, BRIGHT, 8, $1F
 rows_text:
 	db "\r(0<>0)|0   00   00   00   ", $1F
 	db "\r(0<>1)|0   11   00   10   ", $1F
@@ -259,19 +273,19 @@ rows_text:
 	db "\r(0<>1)|1   11   11   11   ", $1F
 	db "\r(1<>1)|1   11   11   11   ", $1F
 footer_text:
-	db 17, 0, 16, 7, 23, 25, 0, 19, 1, 'ccf scf', 17, 8, 16, 8, 19, 8, "\r"
-	db "\r"
-	db 'Result: ', $1F
+	db "\r", BRIGHT, 1, PAPER, 0, INK, 7, TAB, 25, 0, 'ccf scf'
+	db  INK, 8, PAPER, 8, BRIGHT, 8, "\r\r"
+	db 'Result: ', BRIGHT, 1, $1F
 zilog_text:
-	db 19, 1, 17, 4, 'Zilog', $1F
+	db PAPER, 4, 'Zilog', $1F
 nec_nmos_text:
-	db 19, 1, 17, 4, 'NEC NMOS', $1F
+	db PAPER, 4, 'NEC NMOS', $1F
 st_cmos_text:
-	db 19, 1, 17, 4, 'ST CMOS', $1F
+	db PAPER, 4, 'ST CMOS', $1F
 unknown_text:
-	db 19, 1, 17, 2, 18, 1, 'Unknown', 18, 8, $1F
+	db PAPER, 2, FLASH, 1, 'Unknown', FLASH, 8, $1F
 flavor_text:
-	db 17, 8, 19, 8, ' flavor', $1F
+	db PAPER, 8, BRIGHT, 8, ' flavor', $1F
 nn:
 	db 00000000b ; ñ
 	db 00111000b
