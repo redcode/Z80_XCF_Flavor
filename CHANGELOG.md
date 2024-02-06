@@ -1,5 +1,12 @@
 # Z80 XCF Flavor Changelog
 
+## 1.5 / 2024-02-06
+
+### Enhancements
+
+* The values of YF and XF obtained on the host CPU are now highlighted in blue.
+* Forced a new line at the end of the table. This keeps the text output always in 32 columns, regardless of the test runner.
+
 ## 1.4 / 2024-02-05
 
 ### Enhancements
