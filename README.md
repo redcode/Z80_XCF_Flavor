@@ -39,7 +39,7 @@ Many thanks to the following people (in chronological order):
 * **David Banks** for his additional discoveries on the NEC NMOS and ST CMOS variants.
 * **azesmbog** for discovering that the behavior of YF and XF is unstable during the `ccf/scf` instructions.
 * **Peter Helcmanovsky** and **César Nicolás-González** for writting tests and for their help.
-* **Ricardo Martínez Cantero** for validating the test on real hardware.
+* **Ricardo Martínez Cantero**, **ICEknight** and **Marta Sevillano Mancilla** for validating the test on real hardware.
 
 <sup>See the [README](https://github.com/redcode/Z80#thanks) of the [Z80](https://github.com/redcode/Z80) library for a complete list of bibliographical references.</sup>
 
@@ -47,7 +47,7 @@ Many thanks to the following people (in chronological order):
 
 Copyright © 2022-2024 Manuel Sainz de Baranda y Goñi.  
 
-<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/gplv3.svg" width="160" align="right">
+<img src="https://zxe.io/software/Z80_XCF_Flavor/assets/images/gplv3.svg" height="70" align="right">
 
 This program is [free software](https://www.gnu.org/philosophy/free-sw.html): you can redistribute it and/or modify it under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html) as published by the [Free Software Foundation](https://www.fsf.org), either version 3 of the License, or (at your option) any later version.
 
