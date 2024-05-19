@@ -1,4 +1,4 @@
-; Z80 XCF Flavor v1.5
+; Z80 XCF Flavor v1.6
 ; Copyright (C) 2022-2024 Manuel Sainz de Baranda y Goñi.
 ;
 ; This program is free software: you can redistribute it and/or modify it under
@@ -246,12 +246,12 @@ results_on_zilog:
 results_on_nec_nmos:
 	db 00000000b, 00000000b, 00000000b, 00101000b, 00101000b, 00101000b
 results_on_st_cmos:
-	db 00000000b, 00100000b, 00000000b, 00101000b, 00101000b, 00101000b
+	db 00000000b, 00100000b, 00000000b, 00001000b, 00101000b, 00101000b
 header_text:
 	db 'Z80 XCF '
 	db BRIGHT, 1, PAPER, 2, INK, 7, 'F', PAPER, 3, 'L', PAPER, 1, 'A'
 	db PAPER, 5, INK, 8, 'V'
-	db PAPER, 4, 'O', PAPER, 6, 'R', INK, 8, PAPER, 8, BRIGHT, 8, ' v1.5 ('
+	db PAPER, 4, 'O', PAPER, 6, 'R', INK, 8, PAPER, 8, BRIGHT, 8, ' v1.6 ('
 	db __DATE__, ")\r"
 	db 127, ' Manuel Sainz de Baranda y Go', $90, "i\r"
 	db INK, 1, 'https://zxe.io', INK, 8, "\r"
@@ -269,7 +269,7 @@ rows_text:
 	db "\r(0<>0)|0   00   00   00   ", $1F
 	db "\r(0<>1)|0   11   00   10   ", $1F
 	db "\r(1<>1)|0   00   00   00   ", $1F
-	db "\r(0<>0)|1   11   11   11   ", $1F
+	db "\r(0<>0)|1   11   11   01   ", $1F
 	db "\r(0<>1)|1   11   11   11   ", $1F
 	db "\r(1<>1)|1   11   11   11   ", $1F
 footer_text:
