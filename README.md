@@ -35,7 +35,7 @@ To build the tape image and a snapshot in SNA format, type `make` or <code>sjasm
 Many thanks to the following people (in chronological order):
 
 * **Mark Woodmass**, **Stuart Brady** and **Ian Greenway** for their initial research on the `ccf/scf` instructions.
-* **Patrik Rack** for cracking the flag behavior of the `ccf/scf` instructions and writting tests.
+* **Patrik Rak** for cracking the flag behavior of the `ccf/scf` instructions and writting tests.
 * **David Banks** for his additional discoveries on the NEC NMOS and ST CMOS variants.
 * **azesmbog** for discovering that the behavior of YF and XF is unstable during the `ccf/scf` instructions.
 * **Peter Helcmanovsky** and **César Nicolás-González** for writting tests and for their help.
